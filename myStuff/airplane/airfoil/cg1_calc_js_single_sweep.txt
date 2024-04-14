@@ -1,0 +1,685 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Aircraft Center of Gravity Calculator</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252">
+<META NAME="description" CONTENT="Aircraft Center of Gravity Calculator. Helps you locate your plane's Center of Gravity (CG), as well as calculates the Aerodynamic Center (AC), Mean Aerodynamic Chord (MAC), Neutral Point (NP), Wing loading, Wing Area and Stall Speed.">
+<META NAME="keywords" CONTENT="Airplane Center of Gravity, RC Model Airplanes, Airplane CG Calculator, Aircraft CG, Balance Point, Wing loading, Wing MAC, Mean Aerodynamic Chord">
+<script language="javascript" type="text/javascript" src="https://rcplanes.online/illegalcopy.htm"></script>
+</HEAD>
+<BODY aLink=#0000ff vLink="#cc6600" link="cc6600" topmargin="2" oncontextmenu="return false">
+<SCRIPT language=JavaScript1.1>      <!--- hide script from old browsers      
+function compute(obj) 
+{     
+var CALC="T"      
+var A=obj.A.value;
+var B=obj.B.value;      
+var S=obj.S.value;      
+var Y=obj.Y.value;	  
+var CG1=obj.CG1.value;      
+var AA=obj.AA.value;      
+var BB=obj.BB.value;      
+var SS=obj.SS.value;      
+var YY=obj.YY.value;	  
+var D=obj.D.value;
+var E=obj.E.value;     
+if (A==""){alert("Invalid value for Wing Root Chord (A)");CALC="F"}      
+if (AA==""){alert("Invalid value for Tail Root Cord (AA)");CALC="F"}      
+if (B==""){alert("Invalid value for Wing Tip Chord (B)");CALC="F"}	  
+if (BB==""){alert("Invalid value for Tail Tip Chord (BB)");CALC="F"}      
+if (Y==""){alert("Invalid vlaue for Wing Half Span (Y)");CALC="F"}	  
+if (YY==""){alert("Invalid vlaue for Tail Half Span (YY)");CALC="F"}	     
+if (S==""){alert("Invalid value for Wing Sweep Distance (S).  Enter 0 to indicate a straight leading edge.");CALC="F"}
+      
+if (SS==""){alert("Invalid value for Tail Sweep Distance (SS).  Enter 0 to indicate a straight leading edge.");CALC="F"}
+      
+if (CG1==""){alert("Invalid value for Static Margin. Enter a safe value between 5 and 15.");CALC="F"}	  
+if (D==""){alert("Invalid value for Distance between Wing and Tail LE's (D)");CALC="F"}      
+if (CALC=="T")      
+{	  
+<!-- Wing sweep distance at MAC-->      
+W1 = (S*(eval(A)+2*eval(B))) / (3*(eval(A)+eval(B)));      
+obj.result1.value = Math.round(100*(W1))/100;	  
+<!-- Wing MAC -->      
+W2 = (eval(A) - ((2*(eval(A)-eval(B)) * (.5*eval(A)+eval(B))) / (3*(eval(A)+eval(B)))));      
+obj.result2.value = Math.round(100*(W2))/100;	  
+<!-- Wing MAC distance d-->      
+//W3 = eval(Y) * ((eval(A) - W2) / (eval(A) - eval(B)));
+W3 = eval(Y)/3 * (1 + 2*eval(B)/eval(A))/(1 + eval(B)/eval(A));     
+obj.result3.value = Math.round(100*(W3))/100;	  
+
+<!-- Wing AC distance from LD-->  
+W4 = (0.25 * W2) + W1;	  
+obj.result4.value = Math.round(100 * W4) / 100;	  	  
+<!-- Tail sweep distance -->      
+T1 = (SS*(eval(AA)+2*eval(BB))) / (3*(eval(AA)+eval(BB)));	  
+//-- Tail MAC -->      
+T2 = (eval(AA) - ((2*(eval(AA)-eval(BB)) * (.5*eval(AA)+eval(BB))) / (3*(eval(AA)+eval(BB)))));	  
+//-- Tail AC -->	  
+T3 = (0.25*T2)+T1;  
+<!-- Neutral Point -->	  
+D2 = (eval(D) - W4) + T3;
+Area1 = (eval(Y)*eval(A)+eval(Y)*eval(B));
+Area2 = (eval(YY)*eval(AA)+eval(YY)*eval(BB));  
+Area = Area2 / Area1;
+AR = Math.pow((eval(Y)*2),2)/Area1;
+ARs = Math.pow((eval(YY)*2),2)/Area2;
+As =  0.095/(1+(18.25/ARs*0.095));
+Aw = 0.11/(1+(18.25/AR*0.11));
+Vbar = Area*(D2/W2);           
+N1 = (eval(E)*Vbar*(As/Aw)*(1-35*(Aw/AR))*W2)+W4;
+// N1 = (eval(E)* Vbar*Math.pow(AR,.25)*.25*W2)+W4	  
+obj.result5.value = Math.round(100 * N1) / 100;	  
+<!-- CG distance from LE -->	  
+N2 = N1 - (eval(CG1) / 100) * W2;	  
+obj.result6.value = Math.round(100 * N2) / 100;	  
+<!-- Wing Area -->	  
+N3 = Area1;	  
+obj.result7.value = Math.round(10 * N3)/ 10;
+<!-- Tail Area -->	  
+N4 = Area2;	  
+obj.result8.value = Math.round(10 * N4)/ 10;
+N5 = AR;	  
+obj.result9.value = Math.round(100 * N5)/ 100;
+N6 = Vbar;	  
+obj.result10.value = Math.round(100 * N6)/ 100;	        
+}else{      
+obj.result1.value = "Error"      
+obj.result2.value = "Error"      
+obj.result3.value = "Error"      	  
+obj.result4.value = "Error"	  
+obj.result5.value = "Error"	  
+obj.result6.value = "Error"	  
+obj.result7.value = "Error"
+obj.result8.value = "Error"
+obj.result9.value = "Error"
+obj.result10.value = "Error"		       
+} } <!-- end hiding from old browsers --&amp;amp;amp;amp;gt;-->	  
+</SCRIPT>
+<script>
+
+//window.onload = draw; // Execute draw function when DOM is ready
+
+function clearcanvas()
+{
+    var canvas = document.getElementById('myCanvas'),
+        ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function draw(){
+
+   var canvas = document.getElementById('myCanvas');
+    
+   var ctx = canvas.getContext("2d"); 
+
+        var context = canvas.getContext('2d');
+        var A = document.getElementById("A").value; // Wing root chord
+        var B = document.getElementById("B").value; // wing tip chord
+        var C = document.getElementById("C").value; // wing sweep distance
+        var Di = document.getElementById("Di").value; // wing half span
+
+       var D1;
+       D1 = 205+(200/Di)*Di;
+       var A1;
+       A1 = A*(200/Di)+1;
+       var B1;
+       B1 = B*(200/Di);
+       var C1;
+       C1 = C*(200/Di)+1;
+       var E; 
+       E = (1*C1 + 1*B1); 
+
+context.strokeStyle="#ff00ff";
+context.lineWidth = 1.5
+        context.beginPath();
+        context.moveTo(205, 1);
+        context.lineTo(D1, C1);
+        context.lineTo(D1, E);
+        context.lineTo(205, A1);
+        context.stroke();
+
+        var D11;
+        D11 = 205 - (200/Di)*Di;
+        
+        context.beginPath();
+        context.moveTo(205, 1);
+        context.lineTo(D11, C1);
+        context.lineTo(D11, E);
+        context.lineTo(205, A1);
+        context.stroke();
+
+var F = document.getElementById("F").value; // Tail root chord
+var G = document.getElementById("G").value; // Tail tip chord
+var H = document.getElementById("H").value; // Tail sweep distance
+var I = document.getElementById("I").value; // Tail half span
+var K = document.getElementById("K").value; // Distance
+
+       var K1;
+       K1 = K*(200/Di)+1;       
+       var I1;
+       I1 = 205 + I*(200/Di);
+       var F1;
+       F1 = F*(200/Di)+ 1*K1;
+       var G1;
+       G1 = G*(200/Di);
+       var H1;
+       H1 = H*(200/Di)+ 1*K1;
+       var J; 
+       J = (1*H1 + 1*G1);
+
+        context.beginPath();
+        context.moveTo(205, K1);
+        context.lineTo(I1, H1);
+        context.lineTo(I1, J);
+        context.lineTo(205, F1);
+        context.stroke();
+
+        var I11;
+        I11 = 205 - I*(200/Di);
+
+        context.beginPath();
+        context.moveTo(205, K1);
+        context.lineTo(I11, H1);
+        context.lineTo(I11, J);
+        context.lineTo(205, F1);
+        context.stroke();
+
+var SM;
+SM = (Math.round(100*(W1))/100)*(200/Di)+1;
+var MAC;
+MAC = SM+(Math.round(100*(W2))/100)*(200/Di);
+var MAC1;
+MAC1 = (Math.round(100*(W2))/100)*(200/Di);
+var DT1; 
+DT1 = 205+.45*(Math.round(100*(W3))/100)*(200/Di);
+var DT;
+DT = 205+(Math.round(100*(W3))/100)*(200/Di);
+
+context.strokeStyle="#ff00ff";
+ctx.beginPath();
+ctx.moveTo(205, 0);
+ctx.lineTo(205, F1);
+ctx.stroke();
+
+context.strokeStyle="#FF0000";
+ctx.beginPath();
+ctx.moveTo(DT, SM);
+ctx.lineTo(DT, MAC);
+ctx.stroke();
+
+
+var AC;
+AC = (Math.round(100 * W4)/100) *(200/Di)+1;
+
+context.strokeStyle="#000000";
+context.lineWidth = 1
+ctx.beginPath();
+ctx.moveTo(205, AC);
+ctx.lineTo(DT, SM+(0.25*MAC1));
+ctx.stroke();
+
+var CG; 
+CG = (Math.round(100 * N2)/100)*(200/Di)+1;
+
+var NP; 
+NP = (Math.round(100 * N1)/100)*(200/Di)+1;
+
+    ctx.beginPath();
+    ctx.arc(205, AC, 4, 0, Math.PI * 2.0, false);
+    ctx.strokeStyle="#0000ff";
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(205, AC, 4, 0, Math.PI * 0.5, false);
+    ctx.lineTo(205, AC);
+    ctx.arc(205, AC, 4, Math.PI * 1.0, Math.PI * 1.5, false);
+    ctx.lineTo(205, AC);
+    ctx.fillStyle="#0000ff";
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(205, CG, 4, 0, Math.PI * 2.0, false);
+    ctx.strokeStyle="#000000";
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(205, CG, 4, 0, Math.PI * 0.5, false);
+    ctx.lineTo(205, CG);
+    ctx.arc(205, CG, 4, Math.PI * 1.0, Math.PI * 1.5, false);
+    ctx.lineTo(205, CG);
+    ctx.fillStyle="#000000";
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(205, NP, 4, 0, Math.PI * 2.0, false);
+    ctx.strokeStyle="#ff00ff";
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(205, NP, 4, 0, Math.PI * 0.5, false);
+    ctx.lineTo(205, NP);
+    ctx.arc(205, NP, 4, Math.PI * 1.0, Math.PI * 1.5, false);
+    ctx.lineTo(205, NP);
+    ctx.fillStyle="#ff00ff";
+    ctx.fill();
+    ctx.stroke();
+
+  ctx.beginPath();
+  ctx.font = "8px Arial";
+  ctx.fillStyle = "#0000ff";
+  ctx.fillText("AC", 186, AC+3);
+
+  ctx.beginPath();
+  ctx.font = "8px Arial";
+  ctx.fillStyle = "#000000";
+  ctx.fillText("CG", 212, CG+3);
+
+  ctx.beginPath();
+  ctx.font = "8px Arial";
+  ctx.fillStyle = "#ff00ff";
+  ctx.fillText("NP", 186, NP+3);
+
+var DT1;
+DT1 = 205+.45*(Math.round(100*(W3))/100)*(200/Di);
+
+  ctx.beginPath();
+  ctx.font = "9px Arial";
+  ctx.fillStyle = "#0000ff";
+  ctx.fillText("d", DT1, AC-5);
+
+  ctx.beginPath();
+  ctx.font = "8px Arial";
+  ctx.fillStyle = "#FF0000";
+  ctx.fillText("MAC", DT+3, SM+(.5*MAC1));
+
+ }
+
+</script>
+<FORM id=SuperCalc name=SuperCalc>
+<CENTER>
+<TABLE cellSpacing="0" cellPadding="0" width="745" align="center" bgcolor="#000099" border="0">
+<TBODY>
+<TR>
+<TD>
+<DIV align=center>
+<fONT face="Arial, Helvetica, sans-serif" color=#FFFFFF size="5">
+<b>Aircraft Center of Gravity Calculator</b></FONT><br>
+<FONT face="Arial, Helvetica, sans-serif" FONT size="2" color=#FFFFFF>
+Aerodynamic Center (AC), Mean Aerodynamic Chord (MAC), Center of Gravity (CG), Neutral Point (NP) and Wing Area
+<br></FONT>
+</DIV></TD></TR></TBODY>
+</TABLE>
+<table width="750" border="0">
+<TR><TD valign="top">
+<TABLE cellSpacing="0" cellPadding="3" width="295" bgColor="#FFFFFF" border="0" bordercolor="#CC0000" nosave="">
+<TBODY>
+<TR>
+<TD bgColor="#FFFFFF" colSpan="2">
+</TD>
+</TR>
+<TR>
+<TD bgColor="#ff9900" width="250">
+<DIV align=right><FONT face="Arial, Helvetica, sans-serif" color="#FFFFFF" size=2><b>Wing Root Chord (A):</b>&nbsp; </FONT></DIV>
+</TD>
+<TD bgcolor="#FFCC99">
+<FONT face="Arial, Helvetica, sans-serif" size=2><INPUT size=6 name=A id="A"></FONT></TD></TR>
+<TR>
+<TD bgColor="#ff9900">
+<DIV align=right><FONT face="Arial, Helvetica, sans-serif" color="#FFFFFF" size=2><b>Wing Tip Chord (B):</b></FONT>&nbsp; </FONT></DIV>
+</TD>
+<TD bgColor="#FFCC99"><FONT face="Arial, Helvetica, sans-serif" size=2><INPUT size=6 name=B id="B"> </FONT></TD></TR>
+<TR>
+<TD bgColor="#ff9900">
+<DIV align=right><FONT face="Arial, Helvetica, sans-serif" color="#FFFFFF" size=2><b>Wing Sweep Distance (S):</b></FONT></FONT>&nbsp;</FONT></DIV></TD>
+<TD bgColor="#FFCC99"><FONT face="Arial, Helvetica, sans-serif" size=2><INPUT size=6 name=S id="C"> </FONT></TD></TR>
+<TR>
+<TD bgColor="#ff9900">
+<DIV align=right><FONT face="Arial, Helvetica, sans-serif" color="#FFFFFF" size=2><b>Wing Half Span (Y):</b></FONT>&nbsp;</FONT></DIV></TD>
+<TD bgColor="#FFCC99"><FONT face="Arial, Helvetica, sans-serif" size=2><INPUT size=6 name=Y id="Di"> </FONT></TD></TR>
+<TR>
+<TD bgColor="#FFFFFF" colSpan="2">
+</TD>
+</TR>
+<TR>
+<TD bgColor="#ff9900">
+<DIV align="right"><FONT face="Arial, Helvetica, sans-serif" color="#FFFFFF" size="2"><b>Stabilizer Root Chord (AA):</FONT></b>&nbsp;</FONT></DIV>
+</TD>
+<TD bgColor="#FFCC99"><INPUT size=6 name=AA id="F"> 
+</TD></TR>
+<TR>
+<TD bgColor="#ff9900">
+<DIV align=right><FONT face="Arial, Helvetica, sans-serif" color="#FFFFFF" size=2><b>Stabilizer Tip Chord (BB):</b>&nbsp;</FONT></DIV>
+</TD>
+<TD bgColor="#FFCC99"><INPUT size=6 name=BB id="G"> </TD></TR>
+<TR>
+<TD bgColor="#ff9900">
+<DIV align=right><FONT face="Arial, Helvetica, sans-serif" color="#FFFFFF" size=2><b>Stabilizer Sweep Distance (SS):</b>&nbsp;</FONT></DIV>
+</TD>
+<TD bgColor="#FFCC99"><INPUT size=6 name=SS id="H"> </TD></TR>
+<TR>
+<TD bgColor="#ff9900">
+<DIV align=right><FONT face="Arial, Helvetica, sans-serif" color="#FFFFFF" size=2><b>Stabilizer Half Span (YY):</b>&nbsp;</FONT></DIV>
+</TD>
+<TD bgColor="#FFCC99"><INPUT size=6 name=YY id="I"> </TD></TR>
+<TR>
+<TD bgColor="#ff9900">
+<DIV align=right><FONT face="Arial, Helvetica, sans-serif" color="#FFFFFF" size=2><b>Distance between both LE's (D):</b></FONT>&nbsp;</DIV>
+</TD>
+<TD bgColor="#FFCC99"><INPUT size=6 name=D id="K">
+</TD>
+</TR>
+<TR>
+<TD bgColor="#ff9900">
+<DIV align=right><FONT face="Arial, Helvetica, sans-serif" color="#FFFFFF" size=2><b>Stabilizer Efficiency<sup>*</sup>:</b></FONT>&nbsp;</DIV>
+</TD>
+<TD bgColor="#FFCC99">
+<select name="E">
+<option value=".85">Std.</option>
+<option value=".95">T-tail</option>
+<option value=".65">Low</option>
+</TD>
+</TR>
+<TR>
+<TD bgColor="#FFFFFF" colSpan="2">
+</TD>
+</TR>
+<TR>
+<TD bgColor="#cccc00">
+<DIV align=right><FONT face="Arial, Helvetica, sans-serif" color="#FFFFFF" size=2><b>Enter Static Margin, then </b>
+<INPUT type=button value="Click" name=button1 onclick="compute(this.form), clearcanvas(), draw()"></FONT></DIV>
+</TD>
+<TD bgColor="#cccc00"><INPUT size=3 name=CG1> <FONT face="Arial, Helvetica, sans-serif" color="#000000" size=2>%</FONT>
+</TD>
+</TR>
+<TR>
+<TD bgColor="#FFFFFF" colSpan="2">
+</TD>
+</TR>     
+<TR>
+<TD bgColor=#996600>
+<DIV align=right><FONT face="Arial, Helvetica, sans-serif" color=#FFFFFF size="2"><b>Mean Aerodynamic Chord MAC =</b>&nbsp;</FONT></DIV></TD>
+<TD bgColor=#996600><INPUT size=6 value=----- name=result2> 
+</FONT></TD></TR>
+<TR>
+<TD bgColor=#996600>
+<DIV align=right><FONT face="Arial, Helvetica, sans-serif" color="#FFFFFF" size="2"><b>Sweep Distance at MAC (C) =</b>&nbsp;</FONT></DIV></TD>
+<TD bgColor=#996600><INPUT size=6 value=----- name=result1></FONT></TD></TR>
+<TR>
+<TD bgColor=#996600>
+<DIV align=right><FONT face="Arial, Helvetica, sans-serif" color="#FFFFFF" size=2><b>From Root Chord to MAC (d) =</b>&nbsp;</FONT></DIV></TD>
+<TD bgColor=#996600><INPUT size=6 value=----- name=result3></FONT></TD></TR>
+<TR>
+<TD bgColor=#663366>
+<DIV align=right><FONT face="Arial, Helvetica, sans-serif" color=#FFFFFF size=2><b>From Wing Root LE to AC =</b>&nbsp;</FONT></DIV>
+</TD>
+<TD bgColor=#663366><INPUT size=6 value=----- name=result4></FONT></TD></TR>
+<TR>
+<TD bgColor=#663366>
+<DIV align=right><FONT color=#FFFFFF face="Arial, Helvetica, sans-serif" size=2><b>From Wing Root LE to NP =</b></FONT>&nbsp;</FONT></DIV></TD>
+<TD bgColor=#663366><INPUT size=6 value=----- name=result5></FONT></TD></TR>
+<TR>
+<TD bgColor=#663366>
+<DIV align=right><FONT color=#FFFFFF face="Arial, Helvetica, sans-serif" size=2><b>From Wing Root LE to <b>CG</b> =</b></FONT>&nbsp;</FONT></DIV></TD>
+<TD bgColor=#663366><INPUT size=6 value=----- name=result6> </FONT></TD></TR>
+<TR>
+<TD bgColor=#663366>
+<DIV align=right><FONT color=#FFFFFF face="Arial, Helvetica, sans-serif" size=2><b>Wing Area</b> =</FONT>&nbsp;</FONT></DIV></TD>
+<TD bgColor=#663366><INPUT size=6 value=----- name=result7></FONT>
+</TD>
+</TR>
+<TR>
+<TD bgColor=#663366>
+<DIV align=right><FONT color=#FFFFFF face="Arial, Helvetica, sans-serif" size=2><b>Stabilizer Area</b> =</FONT>&nbsp;</FONT></DIV></TD>
+<TD bgColor=#663366><INPUT size=6 value=----- name=result8></FONT>
+</TD></TR>
+<TR bgColor="#eeeeee">
+<TD>
+<DIV align=right><FONT color=#000099 face="Arial, Helvetica, sans-serif" size=2><b>Wing Aspect Ratio</b> =</FONT>&nbsp;</FONT></DIV></TD>
+<TD><INPUT size=6 value=----- name=result9></FONT>
+</TD></TR>
+<TR bgColor="#eeeeee">
+<TD>
+<DIV align=right><FONT color=#000099 face="Arial, Helvetica, sans-serif" size=2><b>Tail Volume Ratio, &nbsp;Vbar</b> =</FONT>&nbsp;</FONT></DIV></TD>
+<TD><INPUT size=6 value=----- name=result10></FONT>
+</TD></TR>
+</TBODY>
+</TABLE>
+</FORM>
+</TD><TD width=440 vAlign="top" >
+<FONT face="Arial, Helvetica, sans-serif" color="#0000ff" size=2>
+&nbsp;&nbsp;&nbsp;&nbsp;Enter the variables at left using the same units for all entries.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;For an aircraft to be stable in pitch, its <b>CG</b> must be forward of the <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;Neutral Point <b>NP</b> by a safety factor called the <b>Static Margin</b>, which<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;is a percentage of the <b>MAC</b> (Mean Aerodynamic Chord).<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;Static Margin should be between 5% and 15% for a good stability.<BR>
+<center>
+<IMG src="cgravity.gif" width="400" height="380"><BR><BR>
+</center>
+&nbsp;&nbsp;&nbsp;&nbsp;Low Static Margin gives less static stability but greater elevator<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;authority, whereas a higher Static Margin results in greater static <BR> 
+&nbsp;&nbsp;&nbsp;&nbsp;stability but reduces elevator authority. <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;Too much Static Margin makes the aircraft nose-heavy, which <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;may result in elevator stall at take-off and/or landing.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;Whereas a low Static Margin makes the aircraft tail-heavy and <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;susceptible to stall at low speed, e. g. during the landing approach.
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#000099 face="Arial, Helvetica, sans-serif" size="2"><sup><b>*</b></sup></FONT>
+<FONT color=#000099 face="Arial, Helvetica, sans-serif" size="2">Choose Low Stabilizer Efficiency if the stab is close to the wing's wake<br>
+&nbsp;&nbsp;&nbsp;&nbsp;or behind a fat fuselage in disturbed flow. Choose T-tail for most gliders.</FONT>         
+</FONT>
+<br><br>
+<Font size=3 face="Arial, Helvetica, sans-serif" color="#0000ff">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For wings with <b>two</b> different panels click <a href="cg2_calc.htm">here</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For wings with <b>three</b> different panels click <a href="cg3_calc.htm">here</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For wings with <b>four</b> different panels click <a href="cg4_calc.htm">here</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For wings with <b>five</b> different panels click <a href="cg5_calc.htm">here</a>
+</FONT></TD></TR></table>
+<table width="750" border="0">
+<tr>
+<td valign="top">
+<FORM name="inputform" ACTION="">       
+<table border= "0" width="312" bordercolor="#CC0000" cellpadding="2" cellspacing="1">
+<tr bgcolor="#000099" height="30">
+<td colspan="3" align="center">
+<font size="3" face="Arial" color="#FFFFFF"><b>Calculate Wing Loading</b></font></td>
+</tr>
+<tr align="center" valign="middle">
+<td bgcolor="#FF9900" align="right" valign="middle">
+<font size="2" face="Arial" color="#FFFFFF"><b>Wing Area :&nbsp;</b></font>
+</td>
+<td bgcolor="#FFCC99" align="center" valign="top">
+<font size="1" face="Arial" color="#000099">sq. in</font><br>
+<INPUT type="text" name="area" size="6" onchange = "entered_sqin(this)">
+</td>
+<td bgcolor="#FFCC99" align="center" valign="top">
+<font size="1" face="Arial" color="#000099">sq. dm</font><br>
+<INPUT type="text" name="metric_area" size="6" onchange = "entered_sqdm(this)">
+</td>
+</tr>
+<tr align="center" valign="middle">
+<td bgcolor="#FF9900" align="right" valign="middle">
+<font size="2" face="Arial" color="#FFFFFF"><b>Aircraft Weight :&nbsp;</b></font>
+</td>
+<td bgcolor="#FFCC99" align="center" valign="top">
+<font size="1" face="Arial" color="#000099">ounces</font><br>
+<INPUT type="text" name="weight" size="6" onchange = "entered_oz(this)">
+</td>
+<td bgcolor="#FFCC99" align="center" valign="top">
+<font size="1" face="Arial" color="#000099">grams</font><br>
+<INPUT type="text" name="metric_weight" size="6" onchange = "entered_gm(this)">
+</td>
+</tr>
+<tr align="center" valign="middle">
+<td bgcolor="#FF9900" align="right" valign="middle">
+<font size="2" face="Arial" color="#FFFFFF"><b>Max Lift Coefficient :&nbsp;</b></font>
+</td>
+<td bgcolor="#FFCC99" align="center" valign="middle" colspan="2" valign="top">
+<font size="1" face="Arial" color="#000099">Max Cl.</font><br>
+<INPUT type="text" name="cl" value="1.0" size="3">
+</td>
+</tr>
+<tr valign="middle" height="5"> 
+<td align="center" colspan="3" bgcolor="#cccc00">
+<INPUT type="button" value="Calculate" name=button1 onclick="calcwingloading()">  
+</td>
+</tr>
+<tr align="center" valign="middle">
+<td bgcolor="#FF9900" align="right" valign="middle">
+<font size="2" face="Arial" color="#FFFFFF"><b>WING LOADING :</b>&nbsp;</font>
+</td>
+<td align="center" bgcolor="#FFCC66" valign="top">
+<font size="1" face="Arial" color="#000099">oz/sq.ft</font><br>
+<input type="text" name="wingloading" size="6">
+</td>
+<td align="center" bgcolor="#FFCC66" valign="top">
+<font size="1" face="Arial" color="#000099">g/sq.dm</font><br>
+<input type="text" name="metric_wingloading" size="6">
+</td>
+</tr>
+<tr align="center" valign="middle">
+<td width="140" bgcolor="#FF9900" align="right" valign="middle">
+<font size="2" face="Arial" color="#FFFFFF"><b>CUBIC LOADING :</b>&nbsp;</font>
+</td>
+<td colspan="2" align="center" bgcolor="#FFCC66" valign="top">
+<font size="1" face="Arial" color="#000099">oz/cubic.ft</font><br>
+<input type="text" name="cubloading" size="6">
+</td>
+</tr>
+<tr align="center" valign="middle">
+<td bgcolor="#FF9900" align="right" valign="middle">
+<font size="2" face="Arial" color="#FFFFFF"><b>STALL SPEED :</b>&nbsp;</font>
+</td>
+<td align="center" bgcolor="#FFCC66" valign="top">
+<font size="1" face="Arial" color="#000099">mph</font><br>
+<input type="text" name="sspeed" size="6">
+</td>
+<td align="center" bgcolor="#FFCC66" valign="top">
+<font size="1" face="Arial" color="#000099">Km/h</font><br>
+<input type="text" name="metric_sspeed" size="6">
+</td>
+</tr>
+<tr align="center" height="20"> 
+<td colspan="3" bgcolor="#cccc00"> 
+<input type="reset" value="Clear" name="reset">
+</td>
+</tr>
+</table>
+</form>
+</td>
+<td valign="middle"  width="420" align="center">
+<br>
+<canvas id="myCanvas" width="410" height="400"  style="border:0px solid #000000;">
+</canvas>
+</td></tr>
+</table>
+<table width="750" height="100" border="0">
+<tr>
+<td>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- CG_new -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-5386722138190032"
+     data-ad-slot="9098863110"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</td>
+</tr>
+</table>
+<SCRIPT>
+<!---
+function calcwingloading() {
+with ( document.inputform ) {
+wingloading.value = Math.round(  weight.value / ( area.value / 144 ) * 100 ) / 100;
+metric_wingloading.value = Math.round(  metric_weight.value / metric_area.value);
+cubloading.value = Math.round(weight.value / (Math.pow((area.value/144), 1.5)) * 100 ) / 100;		
+sspeed.value = Math.round(3.46*Math.pow((2*wingloading.value/cl.value), 0.5)*10)/10;
+metric_sspeed.value = Math.round(10*(sspeed.value*1.609344))/10;
+}
+}
+function imp_name( metric_name ){
+var Position = metric_name.indexOf("_");
+var LastChar = metric_name.length;
+return metric_name.substring( Position + 1, LastChar );
+}
+// length
+function entered_inches( theinput ) {
+var entered_mm = 0;
+entered_mm = Math.round( theinput.value * 2.54 * 10 );
+eval("document.inputform.metric_"+theinput.name).value = entered_mm;
+return true;
+}
+function entered_mm( theinput ) {
+var entered_inches = 0;
+var impname = imp_name( theinput.name );
+entered_inches = Math.round( theinput.value / 2.54 / 10 );
+eval("document.inputform."+impname).value = entered_inches;
+return true;
+}
+// weight
+function entered_oz( theinput)  {
+var metric_val = Math.round( theinput.value / .0353 );
+eval("document.inputform.metric_"+theinput.name).value = metric_val;
+return true;
+}
+function entered_gm( theinput ) {
+var imp_value = Math.round (10*( theinput.value * .0353))/10;
+var impname = imp_name( theinput.name );
+eval("document.inputform."+impname).value = imp_value;
+return true;
+}
+// area
+function entered_sqin( theinput)  {
+var metric_val = Math.round (10*(theinput.value*.0645))/10;
+eval("document.inputform.metric_"+theinput.name).value = metric_val;
+return true;
+}
+function entered_sqdm( theinput ) {
+var imp_value = Math.round (theinput.value/.0645);
+var impname = imp_name( theinput.name );
+eval("document.inputform."+impname).value = imp_value;
+return true;
+}
+function calc_chord() 
+{
+var av_chord=0;
+var met_av_chord=0; with (document.inputform) {
+if ((rchord.value > 0) && (tchord.value > 0)) {
+wingchord.value = ( (rchord.value/1) + (tchord.value/1) ) / 2;
+metric_wingchord.value = ( (metric_rchord.value/1) + (metric_tchord.value/1) ) / 2;						
+}
+}
+return true;
+}
+// -->
+</SCRIPT>
+<script>
+if ((document.URL.indexOf("https://www.rcplanes.online/") != 0) && 
+(document.URL.indexOf("http://www.rcplanes.online/") != 0) &&
+(document.URL.indexOf("https://rcplanes.online/") != 0) &&
+(document.URL.indexOf("http://rcplanes.online/") != 0))
+{location.replace("Aircraft%20Center%20of%20Gravity%20Calculator_files/illegalcopy.htm");}      
+</script><br>
+<a href="index5.htm"> <b> << Back to Stability Concepts</a>
+<!-- Start of StatCounter Code for Default Guide -->
+<script type="text/javascript">
+var sc_project=11235680; 
+var sc_invisible=1; 
+var sc_security="bdbf9e4a"; 
+var scJsHost = (("https:" == document.location.protocol) ?
+"https://secure." : "http://www.");
+document.write("<sc"+"ript type='text/javascript' src='" +
+scJsHost+
+"statcounter.com/counter/counter.js'></"+"script>");
+</script>
+<noscript><div class="statcounter"><a title="web analytics"
+href="http://statcounter.com/" target="_blank"><img
+class="statcounter"
+src="//c.statcounter.com/11235680/0/bdbf9e4a/1/" alt="web
+analytics"></a></div></noscript>
+<!-- End of StatCounter Code for Default Guide -->
+<br><br><br><br>
+</CENTER>
+</BODY>
+</HTML>
